@@ -1,0 +1,28 @@
+@startuml
+autonumber
+actor Client
+collections Server
+database Database
+
+== Initialisation ==
+
+Client -> Server : Demande la page
+Server -> Client : Envoie la page
+
+== Routine ==
+
+group La partie
+    Client -> Server : Joue un coup
+    Server -> Client : Envoie le coup de l'ia
+    note left: Continue tant que la partie n'est pas finie
+end
+
+Server -> Database : On stock la partie (si elle est nouvelle?)
+note over Database
+Comment déterminer si la partie est nouvelle (sans être trop lourd) ?
+Est-ce que ça vaut vraiment le coup de stocker la partie en entier ?
+Autre option: seulement compter les victoires / défaites et le nombre de coups
+end note
+
+Server -> Client : Relancer une nouvelle partie
+@enduml
