@@ -17,6 +17,10 @@ let sketch = (p5: P5) => {
     p5.windowResized = () => {
         p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
     };
+
+    p5.mouseClicked = () => {
+        connect4.mouseClicked(p5.mouseX);
+    }
 };
 
 new P5(sketch);
