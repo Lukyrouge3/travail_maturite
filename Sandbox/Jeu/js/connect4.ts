@@ -9,9 +9,11 @@ export class Connect4 {
     static RED_COLOR = "rgb(255, 60, 60)";
     static BOARD_COLOR = "rgb(100, 100, 255)";
     static EMPTY_COLOR = "rgb(224,224,224)";
+    static EMPTY_BOARD: string = "7/7/7/7/7/7";
 
     currentPlayer: string; // L'index du joueur à qui c'est le tour de jouer
     board: string; // Représente le board sous la form d'un string
+    isEnded: boolean = false; // Savoir si la partie est terminée
 
     p5: P5; // L'instance de p5js
 
@@ -23,9 +25,10 @@ export class Connect4 {
      *  Setup le board
      */
     setup(): void {
-        this.board = "7/7/7/7/7/7"; // Etat initial du board
-        this.currentPlayer = Math.floor(Math.random() * 50) < 50 ? "p" : "P";
+        this.board = Connect4.EMPTY_BOARD; // Etat initial du board
+        this.currentPlayer = Connect4.pickRandomFirstPlayer();
     }
+
 
     /**
      * Dessine le board
@@ -54,18 +57,42 @@ export class Connect4 {
                 // Si ce n'est pas une case vide on dessine une pièce.
             }
         }
+        this.p5.fill(0);
+        this.p5.textSize(30);
+        if (!this.isEnded) this.p5.text("C'est au " + (this.currentPlayer === "P" ? "jaune" : "rouge") + " de jouer !",
+            100, Connect4.RADIUS * (2 * lines.length - 1) + 100);
+        else this.p5.text("Le " + (this.currentPlayer === "p" ? "jaune" : "rouge") + " à gagné !",
+            100, Connect4.RADIUS * (2 * lines.length - 1) + 100);
+        this.p5.fill(180);
+        this.p5.textSize(20);
+        this.p5.text("Le boardString: " + this.board, 100, Connect4.RADIUS * (2 * lines.length - 1) + 150);
     }
 
-    static isNumeric(s: any) {
+    /**
+     * Test si s est un nombre
+     * @param s
+     */
+    static isNumeric(s: any): boolean {
         return !isNaN(s - parseFloat(s));
     }
 
-    mouseClicked(x: number): void {
+    /**
+     * Gère un click
+     * @param x
+     * @param y
+     */
+    mouseClicked(x: number, y: number): void {
         let col = Math.floor(x / (Connect4.RADIUS * 2)); // On calcule la colonne cliquée en fonction de x
-        this.move(col);
+        if (x <= Connect4.RADIUS * 2 * Connect4.WIDTH && y <= Connect4.RADIUS * 2 * Connect4.HEIGHT) // On ne veux que des clics à l'intérieur de la grille
+            this.move(col);
     }
 
-    static toBoardArray(b: string) {
+    /**
+     * Créer un array 2d à partir d'un string
+     * L'array est sous la forme (y, x)
+     * @param b
+     */
+    static toBoardArray(b: string): string[][] {
         let board = [];
         let lines = b.split("/"); // On récupère chaque ligne du board
         for (let i = 0; i < lines.length; i++) {
@@ -81,7 +108,12 @@ export class Connect4 {
         return board;
     }
 
-    move(col: number) {
+    /**
+     * Essaye de faire jouer un coup au currentPlayer
+     * @param col
+     */
+    move(col: number): boolean {
+        if (this.isEnded) return true;
         // Passons du board (string) à une représentation en 2d du board
         let board = Connect4.toBoardArray(this.board);
 
@@ -90,8 +122,11 @@ export class Connect4 {
             if (board[i][col] === "") { // Place libre
                 board[i][col] = this.currentPlayer; // On insère le coup
                 this.board = Connect4.boardArrayToString(board); // On re-génère le string du board
+                if (this.checkWin(board, col, i, this.currentPlayer) // On vérifie si personne n'a gagné
+                    || this.checkDraw(board)) { // On vérifie si le bord n'est pas plein
+                    this.isEnded = true;
+                }
                 this.currentPlayer = this.currentPlayer === "p" ? "P" : "p"; // On swap le currentPlayer
-                this.checkWin(board); // On vérifie si personne n'a gagné
                 // (par gain de perf on passe directement le board 2d pour ne pas avoir à le re-générer)
                 return true;
             }
@@ -100,7 +135,11 @@ export class Connect4 {
         return false;
     }
 
-    private static boardArrayToString(board: any[]) {
+    /**
+     * Créer un string représentant le board à partir d'un array
+     * @param board
+     */
+    private static boardArrayToString(board: any[]): string {
         let str = "";
         let count = 0; // On initialize un compteur pour les cases vides
         for (let i = 0; i < board.length; i++) { // On boucle sur tout le tableau
@@ -125,7 +164,110 @@ export class Connect4 {
         return str.substr(0, str.length - 1); // On retourne le string sans le dernier "/"
     }
 
-    checkWin(board) {
-        //TODO Implement
+    /**
+     *  On teste si le dernier coup joué à terminé la partie.
+     * @param board
+     * @param last_x
+     * @param last_y
+     * @param last_player
+     * @return boolean
+     */
+    checkWin(board: string[][], last_x: number, last_y: number, last_player: string): boolean {
+        // Horizontale
+        let lHor = 0, rHor = 0; // On crée 2 variables qui nous serviront à compter le nombre de pièces horizontales à gauche (lHor) et à droite (rHor)
+        while (board[last_y][last_x - lHor] === last_player) {
+            lHor++;
+            if (last_x - lHor < 0) break; // On ne veut pas chercher en dehors du tableau.
+        }
+        while (board[last_y][last_x + rHor] === last_player) {
+            rHor++;
+            if (last_x + rHor >= board.length) break;
+        }
+        if (lHor + rHor - 1 >= 4) return true; // Si la somme des deux horizontales est plus grande que 4 (en retirant 1 pièces que l'on compte 2 fois) alors le joueur à gagné.
+        // Verticale
+        let ver = 0;
+        if (last_y > 2) {
+            while (board[last_y - ver][last_x] === last_player) {
+                ver++;
+                if (last_y - ver < 0) break;
+            }
+        }
+        // console.log(ver, last_y + ver, board.length, board, board[last_y - ver][last_x]);
+        if (ver >= 4) return true;
+        // Diagonales
+        let lDiag1 = 0, rDiag1 = 0;
+        while (board[last_y - lDiag1][last_x - lDiag1] === last_player) {
+            lDiag1++;
+            if (last_x - lDiag1 < 0 || last_y - lDiag1 < 0) break;
+        }
+        while (board[last_y + rDiag1][last_x + rDiag1] === last_player) {
+            rDiag1++;
+            if (last_y + rDiag1 >= board.length || last_x + rDiag1 >= board[last_y + rDiag1].length) break;
+        }
+        if (lDiag1 + rDiag1 - 1 >= 4) return true;
+        let lDiag2 = 0, rDiag2 = 0;
+        while (board[last_y + lDiag2][last_x - lDiag2] === last_player) {
+            lDiag2++;
+            if (last_x - lDiag2 < 0 || last_y + lDiag2 >= board.length) break;
+        }
+        while (board[last_y - rDiag2][last_x + rDiag2] === last_player) {
+            rDiag2++;
+            if (last_y - rDiag2 < 0 || last_x + rDiag2 >= board[last_y - rDiag2].length) break;
+        }
+        if (lDiag2 + rDiag2 - 1 >= 4) return true;
+        return false;
+    }
+
+    /**
+     * Vérifie si le board est plein et donc la partie est nulle.
+     * @param board
+     */
+    checkDraw(board: string[][]): boolean {
+        for (let i = 0; i < board[Connect4.HEIGHT - 1].length; i++) {
+            if (board[Connect4.HEIGHT - 1][i] === "") return false;
+        }
+        return true;
+    }
+
+    /**
+     * Reset le board
+     */
+    reset(): void {
+        this.board = Connect4.EMPTY_BOARD;
+        this.currentPlayer = Connect4.pickRandomFirstPlayer();
+        this.isEnded = false;
+    }
+
+    /**
+     * Pick un joueur aléatoire
+     */
+    private static pickRandomFirstPlayer(): string {
+        return Math.floor(Math.random() * 50) < 50 ? "p" : "P";
+    }
+
+    /**
+     * Fonction pour mettre le board dans une position précise
+     * @param str
+     */
+    changeString(str: string): void {
+        if (str === "" || str === null) str = Connect4.EMPTY_BOARD;
+        this.board = str;
+        this.currentPlayer = this.board.split("p").length < this.board.split("P").length ? "p" : "P";
+        this.isEnded = this.checkBoardWin();
+    }
+
+    /**
+     * Va check tout le board pour vérifier que personne n'a gagné
+     * Utile notamment quand on change le board de force avec le sring
+     */
+    checkBoardWin() {
+        let b = Connect4.toBoardArray(this.board);
+        if (this.checkDraw(b)) return true;
+        for (let i = 0; i < b.length; i++) {
+            for (let j = 0; j < b[i].length; j++) {
+                if (this.checkWin(b, j, i, this.currentPlayer === "p" ? "P" : "p")) return true;
+            }
+        }
+        return false;
     }
 }
