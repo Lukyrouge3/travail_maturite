@@ -1,4 +1,5 @@
 import P5 from "p5";
+import Socket from "./socket";
 
 export class Connect4 {
     static WIDTH = 7; // La largeur du board
@@ -11,11 +12,13 @@ export class Connect4 {
     static EMPTY_COLOR = "rgb(224,224,224)";
     static EMPTY_BOARD: string = "7/7/7/7/7/7";
 
-    currentPlayer: string; // L'index du joueur à qui c'est le tour de jouer
+    currentPlayer: string; // Le charactère du joueur à qui c'est le tour de jouer (soit p soit P)
     board: string; // Représente le board sous la form d'un string
     isEnded: boolean = false; // Savoir si la partie est terminée
+    ready: boolean = false;
 
     p5: P5; // L'instance de p5js
+    socket: Socket;
 
     constructor(p5: P5) {
         this.p5 = p5;
@@ -24,9 +27,12 @@ export class Connect4 {
     /**
      *  Setup le board
      */
-    setup(): void {
+    setup(diameter: number, currentPlayer: string, socket: Socket): void {
         this.board = Connect4.EMPTY_BOARD; // Etat initial du board
-        this.currentPlayer = Connect4.pickRandomFirstPlayer();
+        Connect4.RADIUS = diameter/2;
+        this.currentPlayer = currentPlayer;
+        this.ready = true;
+        this.socket = socket;
     }
 
 
@@ -59,13 +65,10 @@ export class Connect4 {
         }
         this.p5.fill(0);
         this.p5.textSize(30);
-        if (!this.isEnded) this.p5.text("C'est au " + (this.currentPlayer === "P" ? "jaune" : "rouge") + " de jouer !",
+        if (!this.isEnded) this.p5.text("C'est " + (this.currentPlayer === "p" ? "au joueur" : "à l'ordiateur") + " de jouer !",
             100, Connect4.RADIUS * (2 * lines.length - 1) + 100);
-        else this.p5.text("Le " + (this.currentPlayer === "p" ? "jaune" : "rouge") + " à gagné !",
+        else this.p5.text("L" + (this.currentPlayer === "p" ? "'ordinateur" : "e joueur") + " à gagné !",
             100, Connect4.RADIUS * (2 * lines.length - 1) + 100);
-        this.p5.fill(180);
-        this.p5.textSize(20);
-        this.p5.text("Le boardString: " + this.board, 100, Connect4.RADIUS * (2 * lines.length - 1) + 150);
     }
 
     /**
@@ -128,6 +131,7 @@ export class Connect4 {
                 }
                 this.currentPlayer = this.currentPlayer === "p" ? "P" : "p"; // On swap le currentPlayer
                 // (par gain de perf on passe directement le board 2d pour ne pas avoir à le re-générer)
+                this.socket.send("updateBoard", {board: this.board, currentPlayer: this.currentPlayer});
                 return true;
             }
         }
@@ -269,5 +273,10 @@ export class Connect4 {
             }
         }
         return false;
+    }
+
+    randomMove() {
+        let b;
+        do b = this.move(Math.floor(Math.random() * 7)); while (!b);
     }
 }

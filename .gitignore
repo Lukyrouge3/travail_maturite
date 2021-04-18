@@ -1,2 +1,6 @@
-/Sandbox/Jeu/dist/
-/Code/dist/
+/Client/.cache/
+/Client/dist/
+/Client/node_modules/
+/Client/package-lock.json
+/Serveur/node_modules/
+/Serveur/package-lock.json

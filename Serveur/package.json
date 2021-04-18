@@ -1,0 +1,20 @@
+{
+  "name": "serveur",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsnd --respawn src/index.ts"
+  },
+  "author": "Torrenté Florian",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.37",
+    "@types/socket.io": "^2.1.13",
+    "ts-node-dev": "^1.1.6",
+    "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "socket.io": "^4.0.1"
+  }
+}
