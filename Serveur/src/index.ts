@@ -43,11 +43,23 @@ io.on("connection", socket => {
     });
 
     function move() {
-        if (currentPlayer === "P")
-            // Play a move
-            socket.emit("move", ai.computeMove());
+        // if (currentPlayer === "P")
+        // Play a move
+        // socket.emit("move", ai.computeMove());
     }
 });
 
 
 httpServer.listen(1234);
+
+let ai = new AI();
+ai.move(0)
+ai.move(0)
+ai.move(1)
+ai.move(1)
+ai.move(2)
+ai.move(2)
+ai.move(3)
+ai.move(3)
+console.log(ai.isWinningMove(3));
+console.log(ai.computeMove());
