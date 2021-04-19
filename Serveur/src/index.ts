@@ -1,6 +1,7 @@
 import {Server} from "socket.io";
 import {createServer} from "http";
 import * as fs from "fs";
+import AI from "./AI";
 
 const requestListener = (req, res) => {
     if (req.url === "/") req.url = "/index.html";
@@ -29,14 +30,14 @@ const io = new Server(httpServer);
 
 io.on("connection", socket => {
     let currentPlayer = Math.random() < .5 ? "p" : "P";
-    let boardString = "";
+    let ai: AI;
     socket.emit("setup", currentPlayer);
     socket.on("setupDone", data => {
-        boardString = data;
+        AI.fromBoardString(data);
         move();
     });
     socket.on("updateBoard", data => {
-        boardString = data.board;
+        AI.fromBoardString(data);
         currentPlayer = data.currentPlayer;
         move();
     });
@@ -44,7 +45,7 @@ io.on("connection", socket => {
     function move() {
         if (currentPlayer === "P")
             // Play a move
-            socket.emit("randomMove")
+            socket.emit("move", ai.computeMove());
     }
 });
 

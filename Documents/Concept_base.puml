@@ -2,7 +2,7 @@
 autonumber
 actor Client
 collections Server
-actor IA
+actor AI
 database Database
 
 == Initialisation ==
@@ -14,8 +14,8 @@ Server -> Client : Envoie la page
 
 group La partie
     Client -> Server : Joue un coup
-    Server -> IA : Envoie le coup du joueur
-    IA -> Server : Envoie un nouveau coup
+    Server -> AI : Envoie le coup du joueur
+    AI -> Server : Envoie un nouveau coup
     Server -> Client : Envoie le coup de l'ia
     note left: Continue tant que la partie n'est pas finie
 end
