@@ -30,14 +30,14 @@ const io = new Server(httpServer);
 
 io.on("connection", socket => {
     let currentPlayer = Math.random() < .5 ? "p" : "P";
-    let ai: AI;
+    let ai = new AI();
     socket.emit("setup", currentPlayer);
     socket.on("setupDone", data => {
-        AI.fromBoardString(data);
+        // AI.fromBoardString(data);
         move();
     });
     socket.on("updateBoard", data => {
-        AI.fromBoardString(data);
+        // AI.fromBoardString(data);
         currentPlayer = data.currentPlayer;
         move();
     });
@@ -53,13 +53,4 @@ io.on("connection", socket => {
 httpServer.listen(1234);
 
 let ai = new AI();
-ai.move(0)
-ai.move(0)
-ai.move(1)
-ai.move(1)
-ai.move(2)
-ai.move(2)
-ai.move(3)
-ai.move(3)
-console.log(ai.isWinningMove(3));
 console.log(ai.computeMove());
