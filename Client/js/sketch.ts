@@ -14,8 +14,8 @@ let sketch = (p5: P5) => {
             connect4.setup(p5.width / 8, data, socket);
             socket.send("setupDone", connect4.board);
         });
-        socket.on("randomMove", () => {
-            connect4.randomMove();
+        socket.on("move", col => {
+            connect4.move(col);
         });
         generateButton(p5, "Jouer un coup aléatoire", () => connect4.randomMove(), 800, 70);
         generateButton(p5, "Changer le string du board",

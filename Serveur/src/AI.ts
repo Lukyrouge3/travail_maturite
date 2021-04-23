@@ -1,14 +1,17 @@
+import * as fs from "fs";
+
 export default class AI {
-    private bitboards: Bitboard[];
+    currentLeaf: Leaf;
 
     private ended = false;
 
     constructor() {
-        this.bitboards = [new Bitboard(), new Bitboard()];
+        // this.bitboards = [new Bitboard(), new Bitboard()];
+        this.currentLeaf = new Leaf([new Bitboard(0), new Bitboard(0)], 0);
     }
 
     generateTree(leaf: Leaf, depth, finalDepth) {
-        leaf.computeChildren([0, 1, 2, 3, 4, 5, 6]);
+        leaf.computeChildren();
         depth++;
         for (let i = 0; i < leaf.children.length; i++) {
             if (depth <= finalDepth) this.generateTree(leaf.children[i], depth, finalDepth);
@@ -17,11 +20,9 @@ export default class AI {
 
     computeMove(): number {
         let ms = Date.now();
-        let leaf = new Leaf(new Bitboard(0));
-        this.generateTree(leaf, 0, 4); // Max depth is 6 ~750ms
-        console.log(leaf.score);
+        this.generateTree(this.currentLeaf, 0, 6); // Max depth is 6 ~750ms
         console.log(Date.now() - ms + "ms");
-        return 0;
+        return this.currentLeaf.getBestMove();
     }
 }
 
@@ -80,20 +81,6 @@ class Bitboard {
         return !isNaN(s - parseFloat(s));
     }
 
-    // static fromBoardString(b: string): AI {
-    //     let ai = new AI();
-    //     let lines = b.split("/"); // On récupère chaque ligne du board
-    //     for (let i = 0; i < lines.length; i++) {
-    //         for (let j = 0; j < lines[i].length; j++) {
-    //             let char = lines[i][j];
-    //             if (!Bitboard.isNumeric(char)) {
-    //                 ai.move(j);
-    //             }
-    //         }
-    //     }
-    //     return ai;
-    // }
-
     isWinningMove(col: number): boolean {
         let win;
         this.move(col);
@@ -113,21 +100,28 @@ class Bitboard {
 }
 
 class Leaf {
-    parent: Leaf;
+    // parent: Leaf;
     children: Leaf[] = [];
-    board: Bitboard;
+    boards: Bitboard[];
+    counter = 0;
     _score: number;
 
-    constructor(board: Bitboard, parent?) {
-        this.board = board;
-        this.parent = parent;
+    constructor(boards: Bitboard[], count) {
+        this.boards = boards;
+        this.counter = count;
     }
 
-    computeChildren(moves: number[]) {
+    move(col: number) {
+        this.boards[this.counter & 1].move(col);
+        this.counter++;
+    }
+
+    computeChildren() {
+        let moves = this.boards[this.counter & 1].listMoves();
         let leaves: Leaf[] = [];
         for (let j = 0; j < moves.length; j++) {
-            let leaf = new Leaf(this.board.copy(), this);
-            leaf.board.move(moves[j]);
+            let leaf = new Leaf(this.boards.map(b => b.copy()), this.counter);
+            leaf.move(moves[j]);
             leaves.push(leaf);
         }
         this.children = leaves;
@@ -136,15 +130,38 @@ class Leaf {
     computeLeafScore(count: number): number {
         let score = -42;
         count++;
-        for (let i = 0; i < this.children.length; i++) {
-            if (this.board.isWin()) return 42 - count / 2;
-            score = Math.max(score, this.children[i].computeLeafScore(count));
+        if (this.boards[this.counter & 0].isWin()) {
+            this._score = 42 - this.counter;
+            return 42 - count;
         }
+        if (this.children.length === 0) {
+            this._score = 0;
+            return 0;
+        }
+        for (let i = 0; i < this.children.length; i++) {
+            score = Math.max((this.counter & 1 ? -1 : 1) * this.children[i].computeLeafScore(count), score);
+        }
+        this._score = count & 1 ? score : -score;
         return score;
+    }
+
+    get forcedScore() {
+        return this.computeLeafScore(0);
     }
 
     get score() {
         if (!this._score) this.computeLeafScore(0);
         return this._score;
+    }
+
+    getBestMove(): number {
+        console.log(this.forcedScore, this.children.length, this.children.map(l => l.score));
+        let bestChild = this.children.filter(l => l.score === this.forcedScore)[0];
+        fs.writeFileSync("a.json", JSON.stringify(this));
+        return bestChild.getLastMove();
+    }
+
+    getLastMove(): number {
+        return this.boards[this.counter - 1 & 1].moves[this.boards[this.counter & 0].moves.length - 1];
     }
 }

@@ -31,26 +31,31 @@ const io = new Server(httpServer);
 io.on("connection", socket => {
     let currentPlayer = Math.random() < .5 ? "p" : "P";
     let ai = new AI();
+    ai.currentLeaf.move(0);
+    ai.currentLeaf.move(1);
+    ai.currentLeaf.move(0);
+    ai.currentLeaf.move(1);
+    ai.currentLeaf.move(0);
+    ai.currentLeaf.move(1);
     socket.emit("setup", currentPlayer);
     socket.on("setupDone", data => {
         // AI.fromBoardString(data);
-        move();
+        if (currentPlayer === "P")
+            move();
     });
-    socket.on("updateBoard", data => {
+    socket.on("move", col => {
         // AI.fromBoardString(data);
-        currentPlayer = data.currentPlayer;
+        ai.currentLeaf.move(col);
         move();
     });
 
     function move() {
-        // if (currentPlayer === "P")
-        // Play a move
-        // socket.emit("move", ai.computeMove());
+        let col = ai.computeMove();
+        ai.currentLeaf.move(col);
+        socket.emit("move", col);
+        console.log(col);
     }
 });
 
 
 httpServer.listen(1234);
-
-let ai = new AI();
-console.log(ai.computeMove());

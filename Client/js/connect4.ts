@@ -131,7 +131,7 @@ export class Connect4 {
                 }
                 this.currentPlayer = this.currentPlayer === "p" ? "P" : "p"; // On swap le currentPlayer
                 // (par gain de perf on passe directement le board 2d pour ne pas avoir à le re-générer)
-                this.socket.send("updateBoard", {board: this.board, currentPlayer: this.currentPlayer});
+                if (this.currentPlayer === "P") this.socket.send("move", col);
                 return true;
             }
         }
