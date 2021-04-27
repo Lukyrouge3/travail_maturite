@@ -31,12 +31,6 @@ const io = new Server(httpServer);
 io.on("connection", socket => {
     let currentPlayer = Math.random() < .5 ? "p" : "P";
     let ai = new AI();
-    ai.currentLeaf.move(0);
-    ai.currentLeaf.move(1);
-    ai.currentLeaf.move(0);
-    ai.currentLeaf.move(1);
-    ai.currentLeaf.move(0);
-    ai.currentLeaf.move(1);
     socket.emit("setup", currentPlayer);
     socket.on("setupDone", data => {
         // AI.fromBoardString(data);
@@ -56,6 +50,5 @@ io.on("connection", socket => {
         console.log(col);
     }
 });
-
 
 httpServer.listen(1234);
