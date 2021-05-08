@@ -2,6 +2,7 @@ import {Server} from "socket.io";
 import {createServer} from "http";
 import * as fs from "fs";
 import AI from "./AI";
+import Bitboard from "./Bitboard";
 
 const requestListener = (req, res) => {
     if (req.url === "/") req.url = "/index.html";
@@ -29,7 +30,7 @@ const httpServer = createServer(requestListener);
 const io = new Server(httpServer);
 
 io.on("connection", socket => {
-    let currentPlayer = Math.random() < .5 ? "p" : "P";
+    let currentPlayer = "P";
     let ai = new AI();
     socket.emit("setup", currentPlayer);
     socket.on("setupDone", data => {
@@ -39,16 +40,29 @@ io.on("connection", socket => {
     });
     socket.on("move", col => {
         // AI.fromBoardString(data);
-        ai.currentLeaf.move(col);
+        ai.board.move(col);
         move();
     });
 
     function move() {
-        let col = ai.computeMove();
-        ai.currentLeaf.move(col);
+        let col = ai.minimax(ai.board, 0, true);
+        ai.board.move(col);
         socket.emit("move", col);
-        console.log(col);
+        console.log("move", col);
     }
 });
 
 httpServer.listen(1234);
+
+let ai = new AI();
+ai.board.move(2);
+ai.board.move(2);
+ai.board.move(5);
+ai.board.move(5);
+ai.board.move(4);
+ai.board.move(4);
+ai.board.move(3);
+ai.board.move(3);
+console.log(ai.board.isWin(0),
+    ai.board.toString()
+);

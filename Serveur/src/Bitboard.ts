@@ -27,14 +27,18 @@ export default class Bitboard {
         this.data[this.counter & 1] ^= move;
     }
 
-    isWin(bitboard) {
-        for (let i = 0; i < Bitboard.directions.length; i++) {
-            let direction = Bitboard.directions[i];
-            if ((this.data[bitboard] & (this.data[bitboard] >> direction)
-                & (this.data[bitboard] >> (2 * direction))
-                & (this.data[bitboard] >> (3 * direction))) != 0)
-                return true
-        }
+    isWin(index) {
+        let bb;
+        let bitboard = this.data[index];
+        // for (let i = 0; i < Bitboard.directions.length; i++) {
+        //     let direction = Bitboard.directions[i];
+        //     bb = bitboard & (bitboard >> direction);
+        //     if ((bb & (bb >> (2 * direction))) != 0) return true
+        // }
+        // return false;
+        let m = bitboard & (bitboard >> 7)
+        if (m & (m >> 14)) return true
+
         return false;
     }
 
@@ -58,5 +62,19 @@ export default class Bitboard {
         board.counter = this.counter;
         board.heights = [...this.heights];
         return board;
+    }
+
+    toString() {
+        let str = "[";
+        for (let i = 0; i < this.data.length; i++) {
+            let d = this.data[i];
+            let dstr = '0'.repeat(42 - d.toString(2).length) + d.toString(2);
+            let l = dstr.length;
+            for (let j = 0; j < l; j += 7) {
+                dstr = dstr.substring(0, j) + "\n" + dstr.substring(j, dstr.length);
+            }
+            str += dstr + ",";
+        }
+        return str + "]";
     }
 }
