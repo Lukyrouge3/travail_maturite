@@ -2,7 +2,6 @@ import {Server} from "socket.io";
 import {createServer} from "http";
 import * as fs from "fs";
 import AI from "./AI";
-import Bitboard from "./Bitboard";
 
 const requestListener = (req, res) => { // On initializer un petit serveur http simplement pour servir
     // les quelques fichiers nécessaires
@@ -31,15 +30,19 @@ const httpServer = createServer(requestListener);
 const io = new Server(httpServer); // On crée le WebSocket
 
 io.on("connection", socket => {  // Lors de la connection d'un nouveau socket :
-    let currentPlayer = "P";
-    let ai = new AI();
+    let currentPlayer = 0;
+    let ai1 = new AI();
+    ai1.max_depth = 8;
+    let ai2 = new AI();
     socket.emit("setup", currentPlayer); // On ordonne au client de se setup
     socket.on("setupDone", () => { // Une fois le setup terminé, on joue un coups si c'est le tour de l'odinateur
-        if (currentPlayer === "P")
-            move();
+        let move = Math.floor(Math.random() * 7);
+        ai1.board.move(move);
+        socket.emit("move", move);
     });
     socket.on("move", col => { // Lorsqu'on recoit un coup, on le joue sur l'IA et on envoie le coup de l'IA
-        ai.board.move(col);
+        ai1.board.move(col);
+        // ai2.board.move(col);
         move();
     });
 
@@ -47,9 +50,10 @@ io.on("connection", socket => {  // Lors de la connection d'un nouveau socket :
      * Calcule et joue le coup de l'IA
      */
     function move() {
-        let col = ai.alphaBetaPruning(ai.board, 0, -99, 99, true); // On calcule le meilleur coup
-        ai.board.move(col); // On l'enregistre
-        socket.emit("move", col); // On l'envoie
+        ai1.node_map.clear();
+        let move = ai1.alphaBeta(ai1.board);
+        ai1.board.move(move);
+        socket.emit("move", move);
     }
 });
 

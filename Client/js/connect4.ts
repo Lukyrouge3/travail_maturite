@@ -30,7 +30,7 @@ export class Connect4 {
     setup(diameter: number, currentPlayer: string, socket: Socket): void {
         this.board = Connect4.EMPTY_BOARD; // Etat initial du board
         Connect4.RADIUS = diameter/2;
-        this.currentPlayer = currentPlayer;
+        this.currentPlayer = 'P';
         this.ready = true;
         this.socket = socket;
     }

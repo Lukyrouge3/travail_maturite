@@ -3,10 +3,19 @@ import Logger from "./Logger";
 
 export default class AI {
     board = new Bitboard(); // Contient le board actuel
-    max_depth = 7; // Paramètre pour changer la profondeur de recherche maximale
+    max_depth = 12; // Paramètre pour changer la profondeur de recherche maximale
     node_map = new Map(); // Stoque les coups en fonction de leur score
     count = 0; // Compte le nombre positions évaluées
     time: number; // Compte le temps pris pour l'évaluation de toutes les positions
+
+    static evaluate(position): number {
+        if (position.isWin(0)) return Number.POSITIVE_INFINITY;
+        if (position.isWin(1)) return Number.NEGATIVE_INFINITY;
+        let score = (100 * position.countXInARow(3, 0) + 3 * position.countXInARow(2, 0)) -
+            (100 * position.countXInARow(3, 1) + 3 * position.countXInARow(2, 1));
+
+        return score;
+    }
 
     /**
      * Evalue la position de manière récursive et retourne le meilleur coups
@@ -21,7 +30,6 @@ export default class AI {
             this.time = Date.now();
             this.node_map.clear();
         }
-        this.count++; // On incrémente le compteur
         if (depth !== 0 && (board.isWin(0) || board.isWin(1) || depth === this.max_depth)) {
             if (board.isWin(1)) return -42 + depth; // S'il y a une victoire du joueur
             else if (board.isWin(0)) return 42 - depth; // S'il y a une victoire de l'ordinateur
@@ -31,6 +39,7 @@ export default class AI {
         let best = maxing ? -42 : 42; // On initialize la valeur au plus bas (si on max) ou au plus haut (si on min)
         let availableMoves = board.listMoves(); // On récupère les coups possibles
         for (let i = 0; i < availableMoves.length; i++) {
+            this.count++; // On incrémente le compteur
             let child = board.copy(); // Pour chaque coups, on crée un copie du board actuel
             child.move(availableMoves[i]); // On joue le coup
             let value = this.minimax(child, depth + 1, !maxing); // On évalue cette position
@@ -43,8 +52,7 @@ export default class AI {
         }
         if (depth === 0) { // Si on est à la pronfondeur 0, c'est qu'on a fini l'évaluation donc on retourne le meilleur coups
             // et on affiche le temps
-            Logger.debug(`Minimax solution found: ${Date.now() - this.time}ms || Depth: ${this.max_depth} || Coups évalués: ${this.count}`);
-            console.log(this.node_map);
+            Logger.debug(`Minimax solution found: ${Date.now() - this.time}ms || Depth: ${this.max_depth} || Coups évalués: ${this.count} || Score: ${best}`);
             this.count = 0;
             return this.node_map.get(best)[Math.floor(Math.random() * this.node_map.get(best).length)]; // On retoure un coups aléatoire
             // parmis ceux qui ont le meilleur score.
@@ -52,56 +60,33 @@ export default class AI {
         return best; // Si on est pas a la profondeur 0, on retourne le meilleur score actuel.
     }
 
-    alphaBetaPruning(board: Bitboard, depth: number, alpha: number, beta: number, maxing: boolean): number {
-        if (this.count === 0) { // Lors du premier appel de la fontion on prépare le timer et on nettoie la node_map
-            this.time = Date.now();
-            this.node_map.clear();
+    /**
+     * Evalue une position avec l'algorithme minimax, mais en coupant les branches inutiles de l'arbre de possibilités
+     * Pour gagner du temps
+     * @param position Le board
+     * @param depth La profondeur
+     * @param alpha L'alpha
+     * @param beta Le beta
+     * @param maximizingPlayer Si on max ou on min
+     */
+    alphaBeta(position: Bitboard, depth = this.max_depth, alpha = Number.NEGATIVE_INFINITY, beta = Number.POSITIVE_INFINITY, maximizingPlayer = true): number {
+        // Si la position est une victoire ou si on est à la profondeur max, on évalue la position
+        if (depth == 0 || position.isWin(0) || position.isWin(1)) return AI.evaluate(position);
+        let children = position.listChildren(); // On récupère toutes les positions enfants de celle-ci
+        let val = maximizingPlayer ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY; // On initialize notre valeur en fonction de si on min ou on max
+        for (let child of children) { // On boucle sur chaque enfant de la position
+            let e = this.alphaBeta(child, depth - 1, alpha, beta, !maximizingPlayer); // On évalue l'enfant
+            val = maximizingPlayer ? Math.max(val, e) : Math.min(val, e); // On min ou on max
+            if (depth === this.max_depth && !this.node_map.get(val)) this.node_map.set(val, child.lastMove()); // Si on est sur la première profonfeur, on stoque la valeur
+            alpha = maximizingPlayer ? Math.max(alpha, e) : alpha;
+            beta = maximizingPlayer ? beta : Math.min(beta, e);
+            if (beta <= alpha) break;
         }
-        this.count++; // On incrémente le compteur
-        if (board.isWin(0) || board.isWin(1) || depth === this.max_depth) {
-            if (board.isWin(1)) return -42 + depth; // S'il y a une victoire du joueur
-            else if (board.isWin(0)) return 42 - depth; // S'il y a une victoire de l'ordinateur
-            return 0; // Si on a atteint la profondeur max
+        if (depth === this.max_depth) { // Si on est remonté à la plus haute profondeur, on retourne le meilleur coup.
+            let bestMove = this.node_map.get(alpha);
+            console.log(`Alpha: ${alpha}, Beta: ${beta}, bestMove: ${bestMove}, NodeMap:`, this.node_map);
+            return bestMove;
         }
-        let value;
-        let availableMoves = board.listMoves(); // On récupère les coups possibles
-        if (maxing) {
-            value = -99;
-            for (let i = 0; i < availableMoves.length; i++) {
-                let child = board.copy();
-                child.move(availableMoves[i]);
-                let v = this.alphaBetaPruning(child, depth + 1, alpha, beta, false);
-                if (depth == 0 && v != alpha) {
-                    if (this.node_map.get(v)) this.node_map.set(v, [...this.node_map.get(v), availableMoves[i]]);
-                    else this.node_map.set(v, [availableMoves[i]]);
-                }
-                value = Math.max(value, v);
-                alpha = Math.max(alpha, value);
-                if (alpha >= beta) break;
-            }
-        } else {
-            value = 99;
-            for (let i = 0; i < availableMoves.length; i++) {
-                let child = board.copy();
-                child.move(availableMoves[i]);
-                let v = this.alphaBetaPruning(child, depth + 1, alpha, beta, true);
-                if (depth == 0 && v!= beta) {
-                    if (this.node_map.get(v)) this.node_map.set(v, [...this.node_map.get(v), availableMoves[i]]);
-                    else this.node_map.set(v, [availableMoves[i]]);
-                }
-                value = Math.min(value, v);
-                beta = Math.min(beta, value);
-                if (beta <= alpha) break;
-            }
-        }
-        if (depth === 0) { // Si on est à la pronfondeur 0, c'est qu'on a fini l'évaluation donc on retourne le meilleur coups
-            // et on affiche le temps
-            Logger.debug(`AlphaBeta solution found: ${Date.now() - this.time}ms || Depth: ${this.max_depth} || Coups évalués: ${this.count}`);
-            console.log(this.node_map, alpha, beta);
-            this.count = 0;
-            return this.node_map.get(alpha)[Math.floor(Math.random() * this.node_map.get(alpha).length)]; // On retoure un coups aléatoire
-            // parmis ceux qui ont le meilleur score.
-        }
-        return value;
+        return val; // On retourne la valeur de cette position.
     }
 }

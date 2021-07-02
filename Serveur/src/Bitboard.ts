@@ -2,12 +2,12 @@ import Long = require("long"); // Librairie nécessaire pour pouvoir gérér des
 // gère les nombres jusqu'à 55bits nativement.
 
 export default class Bitboard {
+    static max_heights = [5, 12, 19, 26, 33, 40, 47]; // Stoque les hauteurs max de chaque colonne
+    private static directions = [1, 6, 7, 8]; // Contiens les directions à check pour une victoire
     data: Long[] = [new Long(0), new Long(0)]; // L'index 0 contient les coups de l'IA et le 1 les coups du joueurs
     counter = 0; // Compte le nombre total de coups joués
     moves: number[] = []; // Retiens l'historiques des coups
     heights = [0, 7, 14, 21, 28, 35, 42]; // Retiens le "fill level" c'est à dire le nombre de bits à shifts pour chaque colonne
-    static max_heights = [5, 12, 19, 26, 33, 40, 47]; // Stoque les hauteurs max de chaque colonne
-    private static directions = [1, 6, 7, 8]; // Contiens les directions à check pour une victoire
 
     /**
      * Constructeur du bitboard
@@ -71,5 +71,32 @@ export default class Bitboard {
         board.counter = this.counter;
         board.heights = [...this.heights];
         return board;
+    }
+
+    countXInARow(x: number, player: number): number {
+        let count = 0;
+        let board = this.data[player]; // On récupère le board avec son index
+        let long: Long;
+        Bitboard.directions.forEach(direction => { // Pour chaque direction on teste si 4 pièces sont alignées
+            long = board;
+            for (let j = 1; j < x; j++) long = long.and(board.shr(direction * j));
+            if (!long.isZero()) count++;
+        });
+        return count;
+    }
+
+    listChildren(): Bitboard[] {
+        let moves = this.listMoves();
+        let children = [];
+        for (let m of moves) {
+            let c = this.copy();
+            c.move(m);
+            children.push(c);
+        }
+        return children;
+    }
+
+    lastMove(): number {
+        return this.moves[this.moves.length - 1];
     }
 }
