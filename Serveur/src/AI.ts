@@ -9,8 +9,8 @@ export default class AI {
     time: number; // Compte le temps pris pour l'évaluation de toutes les positions
 
     static evaluate(position): number {
-        if (position.isWin(0)) return Number.POSITIVE_INFINITY;
-        if (position.isWin(1)) return Number.NEGATIVE_INFINITY;
+        if (position.isWin(0)) return Infinity;
+        if (position.isWin(1)) return -Infinity;
         let score = (100 * position.countXInARow(3, 0) + 3 * position.countXInARow(2, 0)) -
             (100 * position.countXInARow(3, 1) + 3 * position.countXInARow(2, 1));
 
@@ -69,11 +69,11 @@ export default class AI {
      * @param beta Le beta
      * @param maximizingPlayer Si on max ou on min
      */
-    alphaBeta(position: Bitboard, depth = this.max_depth, alpha = Number.NEGATIVE_INFINITY, beta = Number.POSITIVE_INFINITY, maximizingPlayer = true): number {
+    alphaBeta(position: Bitboard, depth = this.max_depth, alpha = -Infinity, beta = Infinity, maximizingPlayer = true): number {
         // Si la position est une victoire ou si on est à la profondeur max, on évalue la position
         if (depth == 0 || position.isWin(0) || position.isWin(1)) return AI.evaluate(position);
         let children = position.listChildren(); // On récupère toutes les positions enfants de celle-ci
-        let val = maximizingPlayer ? Number.NEGATIVE_INFINITY : Number.POSITIVE_INFINITY; // On initialize notre valeur en fonction de si on min ou on max
+        let val = maximizingPlayer ? -Infinity : Infinity; // On initialize notre valeur en fonction de si on min ou on max
         for (let child of children) { // On boucle sur chaque enfant de la position
             let e = this.alphaBeta(child, depth - 1, alpha, beta, !maximizingPlayer); // On évalue l'enfant
             val = maximizingPlayer ? Math.max(val, e) : Math.min(val, e); // On min ou on max
@@ -82,11 +82,11 @@ export default class AI {
             beta = maximizingPlayer ? beta : Math.min(beta, e);
             if (beta <= alpha) break;
         }
-        if (depth === this.max_depth) { // Si on est remonté à la plus haute profondeur, on retourne le meilleur coup.
-            let bestMove = this.node_map.get(alpha);
+        if (depth === this.max_depth) {
+            let bestMove = this.node_map.get(maximizingPlayer ? alpha : beta);
             console.log(`Alpha: ${alpha}, Beta: ${beta}, bestMove: ${bestMove}, NodeMap:`, this.node_map);
             return bestMove;
         }
-        return val; // On retourne la valeur de cette position.
+        return val;
     }
 }

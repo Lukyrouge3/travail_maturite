@@ -11,14 +11,6 @@ export default class Socket {
     send(event, data?) {
         this.socket.emit(event, data);
     }
-    //
-    // receive(message: string, data: {}) {
-    //     for (let i = 0; i < this.eventsHandler.length; i++) {
-    //         if (this.eventsHandler[i].message === message) {
-    //             this.eventsHandler[i].handler(data);
-    //         }
-    //     }
-    // }
 
     on(message: string, handler: (data: any) => void) {
         // this.eventsHandler.push({message, handler});
