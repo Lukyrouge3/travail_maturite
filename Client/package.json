@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "parcel index.html --open",
-    "build": "tsc -b && browserify dist/sketch.js > dist/bundle.js"
+    "build": "tsc -b && browserify dist/sketch.js > dist/bundle.js && sass css/index.scss css/index.css"
   },
   "author": "",
   "license": "ISC",

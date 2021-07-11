@@ -17,6 +17,8 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "colors": "^1.4.0",
+    "long": "^4.0.0",
     "socket.io": "^4.0.1"
   }
 }
