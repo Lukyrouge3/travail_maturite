@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 import {Server} from "socket.io";
 import {createServer} from "http";
 import * as fs from "fs";
@@ -63,5 +65,5 @@ io.on("connection", socket => {  // Lors de la connection d'un nouveau socket :
     }
 });
 
-httpServer.listen(1234); // On lance le serveur http
+httpServer.listen(process.env.PORT); // On lance le serveur http
 

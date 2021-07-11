@@ -1,6 +1,6 @@
 import io from "socket.io-client";
 
-export const URL: string = "http://localhost:1234";
+export const URL: string = "http://tm.deneria.net:80";
 
 export default class Socket {
     private socket: SocketIOClient.Socket = io(URL, {autoConnect: true});
