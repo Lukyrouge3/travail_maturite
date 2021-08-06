@@ -4,3 +4,6 @@
 /Client/package-lock.json
 /Serveur/node_modules/
 /Serveur/package-lock.json
+/.idea/
+/Serveur/dist/
+/node_modules/
