@@ -1,12 +1,61 @@
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper]{article}
 \usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
 \usepackage[french]{babel}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{float}
 \usepackage[citestyle=authortitle,defernumbers=true]{biblatex}
 \addbibresource{bibliographie.bib}
+\usepackage{color}
+\definecolor{lightgray}{rgb}{.9,.9,.9}
+\definecolor{darkgray}{rgb}{.4,.4,.4}
+\definecolor{purple}{rgb}{0.65, 0.12, 0.82}
+\lstdefinelanguage{JavaScript}{
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, false, finally, for, function, if, in, instanceof, new, null, return, switch, this, throw, true, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  ndkeywords={class, export, boolean, throw, implements, import, this, number, string},
+  keywordstyle=\color{blue}\bfseries,
+  ndkeywordstyle=\color{darkgray}\bfseries,
+  identifierstyle=\color{black},
+  commentstyle=\color{purple}\ttfamily,
+  stringstyle=\color{red}\ttfamily,
+  sensitive=true
+}
+
+\lstset{
+   language=JavaScript,
+   backgroundcolor=\color{lightgray},
+   extendedchars=true,
+   basicstyle=\footnotesize\ttfamily,
+   showstringspaces=false,
+   showspaces=false,
+   numbers=left,
+   numberstyle=\footnotesize,
+   numbersep=9pt,
+   tabsize=2,
+   breaklines=true,
+   showtabs=false,
+   captionpos=b
+}
 \nocite{*}
+\newcommand{\lexique}[2]{\item{\textbf{#1}:} #2}
+\renewcommand{\lstlistingname}{Figure}% Listing -> Algorithm
+\newcommand{\img}[3][]{
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=#3\textwidth]{#2}
+        \caption{#1}    
+    \end{figure}
+}
+\newcommand{\inlinecode}[1]{\colorbox{lightgray}{#1}}
+\newcommand{\ptitle}[1]{\vspace{10pt}
+{\large \textbf{#1}}}
 
 \author{Torrenté Florian}
 \title{Travail de maturité - Puissance4IA}
@@ -22,18 +71,68 @@
 \subsection{Description et règles du jeu}
     Le Puissance 4 est un jeu avec des règles très simples. Le but du jeu est d'aligner quatre pions de même couleur (horizontalement, verticalement, ou en diagonale). Le terrain de jeu est une grille de 7x6 (sept colonnes et six rangées). Chaque joueur possède les pions d'une couleur (généralement jaune et rouge). Chacun son tour, les joueurs déposent un pion dans la colonne de leur choix, le pion descend alors le plus bas possible dans la colonne. Le premier joueur à aligner quatre pions de sa couleur gagne. S'il n'y a plus de place pour jouer, la partie est nulle.
 
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.5\textwidth]{puissance4.jpg}
-        \caption{Un exemple de partie gagnée par le joueur rouge.}    
-    \end{figure}
+
+    \img[Un exemple de partie gagnée par le joueur rouge.]{Images/puissance4.jpg}{0.5}
+
+    Les règles sont résolument simples mais il y a une raison supplémentaire pour laquelle j'ai choisi ce jeu: c'est un jeu à information complète. Cela veut dire que chaque joueur connait: \begin{itemize}
+        \item tous les coups qu'il peut jouer;
+        \item tous les coups que son adversaire peut jouer;
+        \item les gains résultants de ces actions;
+        \item le but de l'autre joueur.
+    \end{itemize}
 
 \subsection{L'intelligence artificielle}
     L'humanité s'est donné le nom scientifique \textbf{homo sapiens}---l'homme sage---parce que nos capacités mentales sont extrêmement importantes pour nous et notre sentiment d'identité. Le domaine de l'intelligence artificielle (ou IA) tente de comprendre cette intelligence. C'est pourquoi l'étudier peut nous permettre d'en apprendre davantage sur nous-même. Contrairement à la philosophie et à la psychologie, qui s'intéressent aussi à l'intelligence, l'IA essaye de \textit{construire} des entités intelligentes et de les comprendre. Une autre raison d'étudier l'IA est que ces entités construites sont intéressantes et utiles en elles-mêmes. En effet, ces dernières ont donné naissance à de nombreux résultats significatifs et impressionnants.
 
     Maintenant nous savons pourquoi l'IA est intéressant et important, nous avons toujours besoin de savoir précisément \textit{ce que c'est}. On pourrait simplement dire: "Eh bien, ça a à voir avec les programmes intelligents", mais je pense qu'il est important bien définir des objectifs pour pouvoir les atteindre. Une définition plus cohérente pour moi serait celle-ci: "L’intelligence artificielle a pour objectif de construire des dispositifs simulant les processus cognitifs humains"\footcite{haiech_2020}
 \subsection{Objectifs}
+    Dans ce travail, je voulais renforcer mes connaissances sur les différents langages webs (HTML, CSS3 et JavaScript) mais surtout me rapprocher du domaine de l'intelligence artificielle qui à l'air d'être un sujet très prometteur pour le future.
 
+\subsection{Lexique}
+    \begin{description}
+        \lexique{Implémentation}{Réalisation (d’un produit informatique) à partir de documents, mise en œuvre, développement.}
+        \lexique{Long}{En programmation informatique, un entier long (en anglais long integer) est un type de données qui représente un nombre entier pouvant prendre plus de place sur une même machine qu'un entier normal.}
+        \lexique{RAM}{En anglais \textit{Random Access Memory} et en français \textbf{mémoire vive}, est la mémoire utilisée pendant le traitement de donnée. En opposition à la mémoire dite morte qui ne sert qu'à stoquer des données.}
+    \end{description}
+
+\subsection{Théorie}
+    Pour implémenter cet algorithme, il faut définir une structure de donnée très légère et optimisisée afin de pouvoir calculer des milliers de parties en quelques secondes. En informatique, un \textit{long integer} est composé de huit octets, c'est à dire 64 bits. On numérote les bits de ce nombre de droite à gauche (sans oublier qu'en informatique on commence à compter à 0)
+
+    \begin{lstlisting}
+        63 62 61 60 ... 48 47 46 45 ... 3 2 1 0
+    \end{lstlisting}
+    
+    Comme on l'a vu précédemment, le puissance4 se joue sur un \textit{board} vertical, avec sept colonnes et six lignes, ce qui fait 42 cases. Comme on peut le voir sur le diagramme ci-dessous, on ajoute une ligne en haut et deux colonnes à droite pour des raisons de calculs plus tard. Cette représentation est appelée \textit{bitboard}
+    \img[Représentation du bitboard]{Images/BitBoard.png}{0.7}
+    Les nombres indiquent la position dans la représentation binaire d'un long.
+
+    Prenons un exemple en représentant cette position:
+    \img{Images/ExempleBitBoardsPt1.png}{0.3}
+
+    Comme le jeu est joué par deux joueurs, on utilisera un bitboard par joueur.
+    \img{Images/ExempleBitBoardsPt2.png}{1}
+    On peut aussi le voir "à plat", ce qui ressemble à ceci :
+    \img[Représentation des bitboards "à plat"]{Images/FlatBiboard.png}{1}
+
+    Cette manière de représenter les états du jeu est la clé à la vitesse de l'algorithme. En effet, cette représentation permet en utilisant seulement des opérations de base de jouer des coups, de tester s'il y a une victoire, une nulle, ect... Enfin, cette représentation est très légère et permet donc un stockage assez simple et demande très peu de RAM pour fonctionner.
+
+    Maintenant qu'on a vu comment les boards sont représentés, on va pouvoir explorer comment on va traiter ces données, pour jouer des coups et tester s'il y a une victoire. Pour ce faire on n'a besoin que de deux types d'opérations: le \textit{bit shifting} (décalage de bit) et la combinaison de bit (notamment XOR et AND).
+
+    \ptitle{Le décalage de bits}
+
+    Pour décaler des bits en informatique, on utilise 2 opérateurs : \inlinecode{>>} et \inlinecode{<<}. Respectivement \textit{right shift} et \textit{left shift}. Par exemple \inlinecode{0b10101110 << 3} signifie que l'on retire les 3 premiers nombres à gauche et on ajoute 3 zéros à droite. Ici, le préfixe 0b indique que les chiffres suivants représentent un nombre binaire et non un nombre décimal. Donc \inlinecode{0b10101110 << 3 = 0b01110000}. De manière similaire, \inlinecode{0b10101110 >> 3 = 0b00010101}.
+    
+    \ptitle{La combinaison de bits}
+
+    Les deux seuls opérateurs dont nous aurons besoin sont le \textit{XOR} et le \textit{AND}. L'opérateur XOR, ou OR exlusif, (qu'on écrit \inlinecode{\^{}}) prend deux nombres binaires, par exemple \inlinecode{0b10101110 \^{} 0b10011111}, et compare les bits de même position. Si les deux bits sont différents, le résultat est 1, sinon c'est 0.
+
+    Si on écrits les deux nombres l'un sur l'autre, les bits sont facile à comparer.
+    \img[Exemple de l'opérateur XOR]{Images/XORExemple.png}{0.2}
+
+    L'opérateur AND (qu'on écrit \inlinecode{\&}) prend aussi 2 nombres binaires et les compare bit par bit. Si les deux bits sont un 1, le resultat est 1 sinon 0.
+    \img[Exemple de l'opérateur AND]{Images/ANDExemple.png}{0.2}
+
+    
 \section{Déroulement du travail}
 
 \subsection{Mise en place}
