@@ -7,6 +7,8 @@
 \usepackage{csquotes}
 \usepackage{listings}
 \usepackage{float}
+\usepackage{geometry}
+\geometry{hmargin=2.5cm,vmargin=1.5cm}
 \usepackage[citestyle=authortitle,defernumbers=true]{biblatex}
 \addbibresource{bibliographie.bib}
 \usepackage{color}
@@ -68,6 +70,11 @@
 \newpage
 \section{Introduction}
 
+\subsection{Problématique et objectifs}
+    Dans quelle mesure l'imnplémentation d'un intelligence artificielle pour jouer au puissance 4 est-elle compliquée, et quelles en sont les difficultés ?
+
+    Dans ce travail, je voulais renforcer mes connaissances sur les différents langages webs (HTML, CSS3 et JavaScript) mais surtout me rapprocher du domaine de l'intelligence artificielle qui à l'air d'être un sujet très prometteur pour le future.
+
 \subsection{Description et règles du jeu}
     Le Puissance 4 est un jeu avec des règles très simples. Le but du jeu est d'aligner quatre pions de même couleur (horizontalement, verticalement, ou en diagonale). Le terrain de jeu est une grille de 7x6 (sept colonnes et six rangées). Chaque joueur possède les pions d'une couleur (généralement jaune et rouge). Chacun son tour, les joueurs déposent un pion dans la colonne de leur choix, le pion descend alors le plus bas possible dans la colonne. Le premier joueur à aligner quatre pions de sa couleur gagne. S'il n'y a plus de place pour jouer, la partie est nulle.
 
@@ -84,18 +91,10 @@
 \subsection{L'intelligence artificielle}
     L'humanité s'est donné le nom scientifique \textbf{homo sapiens}---l'homme sage---parce que nos capacités mentales sont extrêmement importantes pour nous et notre sentiment d'identité. Le domaine de l'intelligence artificielle (ou IA) tente de comprendre cette intelligence. C'est pourquoi l'étudier peut nous permettre d'en apprendre davantage sur nous-même. Contrairement à la philosophie et à la psychologie, qui s'intéressent aussi à l'intelligence, l'IA essaye de \textit{construire} des entités intelligentes et de les comprendre. Une autre raison d'étudier l'IA est que ces entités construites sont intéressantes et utiles en elles-mêmes. En effet, ces dernières ont donné naissance à de nombreux résultats significatifs et impressionnants.
 
-    Maintenant nous savons pourquoi l'IA est intéressant et important, nous avons toujours besoin de savoir précisément \textit{ce que c'est}. On pourrait simplement dire: "Eh bien, ça a à voir avec les programmes intelligents", mais je pense qu'il est important bien définir des objectifs pour pouvoir les atteindre. Une définition plus cohérente pour moi serait celle-ci: "L’intelligence artificielle a pour objectif de construire des dispositifs simulant les processus cognitifs humains"\footcite{haiech_2020}
-\subsection{Objectifs}
-    Dans ce travail, je voulais renforcer mes connaissances sur les différents langages webs (HTML, CSS3 et JavaScript) mais surtout me rapprocher du domaine de l'intelligence artificielle qui à l'air d'être un sujet très prometteur pour le future.
+    Maintenant nous savons pourquoi l'IA est intéressant et important, nous avons toujours besoin de savoir précisément \textit{ce que c'est}. On pourrait simplement dire: "Eh bien, ça a à voir avec les programmes intelligents", mais je pense qu'il est important bien définir des objectifs pour pouvoir les atteindre. Une définition plus cohérente pour moi serait celle-ci: "L’intelligence artificielle a pour objectif de construire des dispositifs simulant les processus cognitifs humains"\footcite{haiech_2020}    
 
-\subsection{Lexique}
-    \begin{description}
-        \lexique{Implémentation}{Réalisation (d’un produit informatique) à partir de documents, mise en œuvre, développement.}
-        \lexique{Long}{En programmation informatique, un entier long (en anglais long integer) est un type de données qui représente un nombre entier pouvant prendre plus de place sur une même machine qu'un entier normal.}
-        \lexique{RAM}{En anglais \textit{Random Access Memory} et en français \textbf{mémoire vive}, est la mémoire utilisée pendant le traitement de donnée. En opposition à la mémoire dite morte qui ne sert qu'à stoquer des données.}
-    \end{description}
 
-\subsection{Théorie}
+\subsection{La structure des données}
     Pour implémenter cet algorithme, il faut définir une structure de donnée très légère et optimisisée afin de pouvoir calculer des milliers de parties en quelques secondes. En informatique, un \textit{long integer} est composé de huit octets, c'est à dire 64 bits. On numérote les bits de ce nombre de droite à gauche (sans oublier qu'en informatique on commence à compter à 0)
 
     \begin{lstlisting}
@@ -107,10 +106,10 @@
     Les nombres indiquent la position dans la représentation binaire d'un long.
 
     Prenons un exemple en représentant cette position:
-    \img{Images/ExempleBitBoardsPt1.png}{0.3}
+    \img[Partie en cours]{Images/ExempleBitBoardsPt1.png}{0.3}
 
     Comme le jeu est joué par deux joueurs, on utilisera un bitboard par joueur.
-    \img{Images/ExempleBitBoardsPt2.png}{1}
+    \img[Partie en cours avec les bitboards]{Images/ExempleBitBoardsPt2.png}{1}
     On peut aussi le voir "à plat", ce qui ressemble à ceci :
     \img[Représentation des bitboards "à plat"]{Images/FlatBiboard.png}{1}
 
@@ -120,38 +119,116 @@
 
     \ptitle{Le décalage de bits}
 
-    Pour décaler des bits en informatique, on utilise 2 opérateurs : \inlinecode{>>} et \inlinecode{<<}. Respectivement \textit{right shift} et \textit{left shift}. Par exemple \inlinecode{0b10101110 << 3} signifie que l'on retire les 3 premiers nombres à gauche et on ajoute 3 zéros à droite. Ici, le préfixe 0b indique que les chiffres suivants représentent un nombre binaire et non un nombre décimal. Donc \inlinecode{0b10101110 << 3 = 0b01110000}. De manière similaire, \inlinecode{0b10101110 >> 3 = 0b00010101}.
+    Pour décaler des bits en informatique, on utilise 2 opérateurs : \inlinecode{>>} et \inlinecode{<<}. Respectivement \textit{right shift} et \textit{left shift}. Par exemple \inlinecode{0b10101110 << 3} signifie que l'on retire les 3 premiers nombres à gauche et on ajoute 3 zéros à droite. Ici, le préfixe 0b indique que les chiffres suivants représentent un nombre binaire et non un nombre décimal. Donc \inlinecode{0b10101110 << 3 = 0b01110000}.
+   
+    De manière similaire, \inlinecode{0b10101110 >> 3 = 0b00010101}.
+
     
     \ptitle{La combinaison de bits}
 
     Les deux seuls opérateurs dont nous aurons besoin sont le \textit{XOR} et le \textit{AND}. L'opérateur XOR, ou OR exlusif, (qu'on écrit \inlinecode{\^{}}) prend deux nombres binaires, par exemple \inlinecode{0b10101110 \^{} 0b10011111}, et compare les bits de même position. Si les deux bits sont différents, le résultat est 1, sinon c'est 0.
 
     Si on écrits les deux nombres l'un sur l'autre, les bits sont facile à comparer.
-    \img[Exemple de l'opérateur XOR]{Images/XORExemple.png}{0.2}
+    \img[Exemple de l'opérateur XOR]{Images/XORExemple.png}{0.15}
 
     L'opérateur AND (qu'on écrit \inlinecode{\&}) prend aussi 2 nombres binaires et les compare bit par bit. Si les deux bits sont un 1, le resultat est 1 sinon 0.
-    \img[Exemple de l'opérateur AND]{Images/ANDExemple.png}{0.2}
+    \img[Exemple de l'opérateur AND]{Images/ANDExemple.png}{0.15}
 
-    
+\subsection{Application des bitboards pour le puissance 4}
+
+    Pour montrer l'utilisation des bitboards je vais vous présenter les 2 fonctions principales dont nous avons besoin : \inlinecode{makeMove} et \inlinecode{isWin}. La première permet de jouer un coup tandis que la seconde permet de déterminer si un joueur à gagné.
+
+    Avant d'examiner ces fonctions, nous avons encore besoin de garder en mémoire : la position à remplir de chaque colonne qui sera stoquée dans le tableau \inlinecode{heights} et la hauteur max de chaque colonne qui sera stoquée dans le tableau \inlinecode{max\_heights}.
+
+    \img[Début de partie]{Images/EmptyBoard.png}{0.4}
+
+    Comme on le voit dans la figure ci-dessus, au début de la partie les hauteurs sont: \newline\inlinecode{heights = \{0, 7, 14, 21, 28, 35, 42\}} et les hauteurs max sont: \inlinecode{max\_heights = \{6,13,20,27,34,41,48\}}. A chaque fois qu'un coup sera joué dans une colonne, on augmentera l'indice de la colonne de 1. En gardant ceci en mémoire, cela nous évite de devoir chercher la prochaine case vide à chaque coup joué.
+
+    \ptitle{Jouer un coup}
+
+    \begin{lstlisting}
+        function makeMove(column, playerBoard) {
+            move = 1 << height[column]; // (1)
+            playerBoard = playerBoard ^ move;  // (2)
+            height[column] += 1; // (3)
+        }
+    \end{lstlisting}
+
+    Voici ce que le code fait : 
+    \begin{enumerate}
+        \item On récupère la valeur height en fonction de la colonne donnée et on l'utilise pour décaler le nombre 1 vers la gauche jusqu'à cette position. Ensuite on stoque cette valeur dans la variable \inlinecode{move}.
+        \item On prend le board représentant le joueur et on utilise l'opérateur XOR avec la variable \inlinecode{move}. (\inlinecode{playerBoard \^{} move}) et on met à jour la nouvelle valeur du bitboard.
+        \item On incrémente la valeur de la hauteur de cette colonne de 1 pour être prêt pour le prochain coup.
+    \end{enumerate}
+
+    Je pense qu'un exemple aidera à mieux visualiser la situation. Imaginons que je veux jouer un coup dans la colonne 3. Je vais donc chercher l'index de la hauteur de cette colonne : \inlinecode{heights[3]} qui vaut \inlinecode{21}. Je décale donc mon \inlinecode{1} 21 fois vers la gauche (\inlinecode{1 << 21}).
+
+    \img[Exemple de la fonction makeMove]{Images/ExempleMakeMove.png}{1}
+
+    \newpage
+    \ptitle{Est-ce qu'un joueur à gagné ?}
+
+    Reprenons la représentation du bitboard
+    \img[Représentation du bitboard]{Images/BitBoard.png}{0.5}
+    Pour savoir s'il y a 4 pièces alignées horizontalement, on doit, par exemple, regarder si les positions 11, 18, 25 et 32 sont toutes des 1. On pourrait aussi regarder les positions 21, 28, 35 et 42. Le patterne là-dessous est simple: on prend la position la plus à gauche et on ajoute 7 à chaque fois.
+
+    Verticallement ce nombre est 1 (par exemple les positions 15 et 16). En diagonale ce nombre est soit 8 (par exemple 16 et 24) ou alors 6 (30 et 36).
+
+    Donc les nombres "magiques" sont 1, 6, 7 et 8.
+
+    Pour tester si il y a 4 pièces alignées on va prendre notre bitboard, faire une copie et la décaler à droite d'un de ces nombres, refaire une copie et la décaler de 2 fois plus et encore une copier mais cette fois-ci 3 fois plus. Ensuite on combine toutes les copies avec l'opérateur AND et le tour est joué. Si la réponse est différente de 0 alors il y a 4 pièces alignées.
+
+    Encore une fois, un exemple sera probablement plus clair:
+    \img[Exemple de la fonction isWin]{Images/ExempleIsWin.png}{0.8}
+
+    Maintenant que nous savons comment ça marche, il suffit de l'implémenter pour toutes les directions. Le symbole \inlinecode{!=} signifie "différent de".
+    \begin{lstlisting}
+    isWin(bitboard) {
+        if (bitboard & (bitboard >> 6) & (bitboard >> 12) & (bitboard >> 18) != 0) return true; // diagonal \
+        if (bitboard & (bitboard >> 8) & (bitboard >> 16) & (bitboard >> 24) != 0) return true; // diagonal /
+        if (bitboard & (bitboard >> 7) & (bitboard >> 14) & (bitboard >> 21) != 0) return true; // horizontal
+        if (bitboard & (bitboard >> 1) & (bitboard >>  2) & (bitboard >>  3) != 0) return true; // vertical
+        return false;
+    }
+    \end{lstlisting}
+
+    Par direction, la fonction a besoin d'environ 7 opérations : 3 shifts, 3 AND et 1 comparaison. Une évaluation complète du board requiert donc 4x7=28 opérations. Les ordinateurs actuels effectuent environ 3 milliards d'opérations par seconde, on peut donc évaluer environ \textbf{100 millions de positions par seconde}.
+
 \section{Déroulement du travail}
 
 \subsection{Mise en place}
 
-\subsection{Implémentation du Puissance 4}
+    Pour commencer, il a fallu choisir la structure et les différentes technologies que je voulais utiliser pour ce projet.
 
-\subsection{Implémentation de l'algorithme Minimax}
+    \ptitle{La structure du projet}
+
+    \ptitle{Les technologies}
+
+\subsection{Implémentation des bitboards}
+
+\subsection{Implémentation du puissance 4}
+
+\subsection{Implémentation de m inimax}
 
 \subsection{Améliorations de l'algorithme}
 
-\subsection{Tests grandeur nature}
+% \subsection{Tests utilisateurs}
 
 \section{Conclusion}
-\subsection{Atteinte des objectifs}
-\subsection{Ouverture vers le futur}
+\subsection{Atteinte des objectifs fixés}
+\subsection{Possibilités d'améliorations}
 \subsection{Remerciements}
 
 \newpage
 \section{Bibliographie}
+\subsection{Lexique}
+    \begin{description}
+        \lexique{Implémentation}{Réalisation (d’un produit informatique) à partir de documents, mise en œuvre, développement.}
+        \lexique{Entier long}{En programmation informatique, un entier long (en anglais long integer) est un type de données qui représente un nombre entier pouvant prendre plus de place sur une même machine qu'un entier normal.}
+        \lexique{RAM}{En anglais \textit{Random Access Memory} et en français \textbf{mémoire vive}, est la mémoire utilisée pendant le traitement de donnée. En opposition à la mémoire dite morte qui ne sert qu'à stoquer des données.}
+        \lexique{AND}{L'opérateur \textit{AND} (ou opérateur ET en français) prend deux nombre en entrée et retourne VRAI (ou dans notre cas 1) si les deux nombres sont les mêmes. Sinon il retourne FAUX (0 pour nous).}
+        \lexique{XOR}{L'opérateur \textit{XOR} (appelé OU exclusif en français) prend deux nombres en entrée et retourne VRAI si les deux nombres sont différents. Sinon il retourne FAUX.}
+    \end{description}
 \subsection{Livres}
 \printbibliography[heading=none, type=book]
 \subsection{Sites web}
