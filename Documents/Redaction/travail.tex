@@ -71,7 +71,7 @@
 \section{Introduction}
 
 \subsection{Problématique et objectifs}
-    Dans quelle mesure l'imnplémentation d'un intelligence artificielle pour jouer au puissance 4 est-elle compliquée, et quelles en sont les difficultés ?
+    Dans quelle mesure l'implémentation d'une intelligence artificielle pour jouer au Puissance 4 est-elle compliquée, et quelles en sont les difficultés ?
 
     Dans ce travail, je voulais renforcer mes connaissances sur les différents langages webs (HTML, CSS3 et JavaScript) mais surtout me rapprocher du domaine de l'intelligence artificielle qui à l'air d'être un sujet très prometteur pour le future.
 
@@ -81,7 +81,7 @@
 
     \img[Un exemple de partie gagnée par le joueur rouge.]{Images/puissance4.jpg}{0.5}
 
-    Les règles sont résolument simples mais il y a une raison supplémentaire pour laquelle j'ai choisi ce jeu: c'est un jeu à information complète. Cela veut dire que chaque joueur connait: \begin{itemize}
+    Les règles sont résolument simples, mais il y a une raison supplémentaire pour laquelle j'ai choisi ce jeu: c'est un jeu à information complète. Cela veut dire que chaque joueur connait : \begin{itemize}
         \item tous les coups qu'il peut jouer;
         \item tous les coups que son adversaire peut jouer;
         \item les gains résultants de ces actions;
@@ -91,17 +91,17 @@
 \subsection{L'intelligence artificielle}
     L'humanité s'est donné le nom scientifique \textbf{homo sapiens}---l'homme sage---parce que nos capacités mentales sont extrêmement importantes pour nous et notre sentiment d'identité. Le domaine de l'intelligence artificielle (ou IA) tente de comprendre cette intelligence. C'est pourquoi l'étudier peut nous permettre d'en apprendre davantage sur nous-même. Contrairement à la philosophie et à la psychologie, qui s'intéressent aussi à l'intelligence, l'IA essaye de \textit{construire} des entités intelligentes et de les comprendre. Une autre raison d'étudier l'IA est que ces entités construites sont intéressantes et utiles en elles-mêmes. En effet, ces dernières ont donné naissance à de nombreux résultats significatifs et impressionnants.
 
-    Maintenant nous savons pourquoi l'IA est intéressant et important, nous avons toujours besoin de savoir précisément \textit{ce que c'est}. On pourrait simplement dire: "Eh bien, ça a à voir avec les programmes intelligents", mais je pense qu'il est important bien définir des objectifs pour pouvoir les atteindre. Une définition plus cohérente pour moi serait celle-ci: "L’intelligence artificielle a pour objectif de construire des dispositifs simulant les processus cognitifs humains"\footcite{haiech_2020}    
+    Maintenant, nous savons pourquoi l'IA est intéressant et important, nous avons toujours besoin de savoir précisément \textit{ce que c'est}. On pourrait simplement dire: "Eh bien, ça a à voir avec les programmes intelligents", mais je pense qu'il est important de bien définir des objectifs pour pouvoir les atteindre. Une définition plus cohérente pour moi serait celle-ci: "L’intelligence artificielle a pour objectif de construire des dispositifs simulant les processus cognitifs humains"\footcite{haiech_2020}    
 
 
 \subsection{La structure des données}
-    Pour implémenter cet algorithme, il faut définir une structure de donnée très légère et optimisisée afin de pouvoir calculer des milliers de parties en quelques secondes. En informatique, un \textit{long integer} est composé de huit octets, c'est à dire 64 bits. On numérote les bits de ce nombre de droite à gauche (sans oublier qu'en informatique on commence à compter à 0)
+    Pour implémenter cet algorithme, il faut définir une structure de donnée très légère et optimisée afin de pouvoir calculer des milliers de parties en quelques secondes. En informatique, un \textit{long integer} est composé de huit octets, c'est-à-dire 64 bits. On numérote les bits de ce nombre de droite à gauche (sans oublier qu'en informatique on commence à compter à 0)
 
     \begin{lstlisting}
         63 62 61 60 ... 48 47 46 45 ... 3 2 1 0
     \end{lstlisting}
     
-    Comme on l'a vu précédemment, le puissance4 se joue sur un \textit{board} vertical, avec sept colonnes et six lignes, ce qui fait 42 cases. Comme on peut le voir sur le diagramme ci-dessous, on ajoute une ligne en haut et deux colonnes à droite pour des raisons de calculs plus tard. Cette représentation est appelée \textit{bitboard}
+    Comme on l'a vu précédemment, le Puissance 4 se joue sur un \textit{board} vertical, avec sept colonnes et six lignes, ce qui fait 42 cases. Comme on peut le voir sur le diagramme ci-dessous, on ajoute une ligne en haut et deux colonnes à droite pour des raisons de calculs plus tard. Cette représentation est appelée \textit{bitboard}
     \img[Représentation du bitboard]{Images/BitBoard.png}{0.7}
     Les nombres indiquent la position dans la représentation binaire d'un long.
 
@@ -109,11 +109,11 @@
     \img[Partie en cours]{Images/ExempleBitBoardsPt1.png}{0.3}
 
     Comme le jeu est joué par deux joueurs, on utilisera un bitboard par joueur.
-    \img[Partie en cours avec les bitboards]{Images/ExempleBitBoardsPt2.png}{1}
+    \img[Partie en cours avec les bitboards]{Images/ExempleBitBoardsPt2.png}{0.7}
     On peut aussi le voir "à plat", ce qui ressemble à ceci :
     \img[Représentation des bitboards "à plat"]{Images/FlatBiboard.png}{1}
 
-    Cette manière de représenter les états du jeu est la clé à la vitesse de l'algorithme. En effet, cette représentation permet en utilisant seulement des opérations de base de jouer des coups, de tester s'il y a une victoire, une nulle, ect... Enfin, cette représentation est très légère et permet donc un stockage assez simple et demande très peu de RAM pour fonctionner.
+    Cette manière de représenter les états du jeu est la clé à la vitesse de l'algorithme. En effet, cette représentation permet en utilisant seulement des opérations de base de jouer des coups, de tester s'il y a une victoire, une nulle, etc... Enfin, cette représentation est très légère et permet donc un stockage assez simple et demande très peu de RAM pour fonctionner.
 
     Maintenant qu'on a vu comment les boards sont représentés, on va pouvoir explorer comment on va traiter ces données, pour jouer des coups et tester s'il y a une victoire. Pour ce faire on n'a besoin que de deux types d'opérations: le \textit{bit shifting} (décalage de bit) et la combinaison de bit (notamment XOR et AND).
 
@@ -126,23 +126,23 @@
     
     \ptitle{La combinaison de bits}
 
-    Les deux seuls opérateurs dont nous aurons besoin sont le \textit{XOR} et le \textit{AND}. L'opérateur XOR, ou OR exlusif, (qu'on écrit \inlinecode{\^{}}) prend deux nombres binaires, par exemple \inlinecode{0b10101110 \^{} 0b10011111}, et compare les bits de même position. Si les deux bits sont différents, le résultat est 1, sinon c'est 0.
+    Les deux seuls opérateurs dont nous aurons besoin sont le \textit{XOR} et le \textit{AND}. L'opérateur XOR, ou OR exlusif, (qu'on écrit \inlinecode{\^{}}) prend deux nombres binaires, par exemple \inlinecode{0b10101110 \^{} 0b10011111}, et compare les bits de même position. Si les deux bits sont différents, le résultat est 1, sinon, c'est 0.
 
     Si on écrits les deux nombres l'un sur l'autre, les bits sont facile à comparer.
     \img[Exemple de l'opérateur XOR]{Images/XORExemple.png}{0.15}
 
-    L'opérateur AND (qu'on écrit \inlinecode{\&}) prend aussi 2 nombres binaires et les compare bit par bit. Si les deux bits sont un 1, le resultat est 1 sinon 0.
+    L'opérateur AND (qu'on écrit \inlinecode{\&}) prend aussi 2 nombres binaires et les compare bit par bit. Si les deux bits sont un 1, le résultat est 1, sinon 0.
     \img[Exemple de l'opérateur AND]{Images/ANDExemple.png}{0.15}
 
 \subsection{Application des bitboards pour le puissance 4}
 
-    Pour montrer l'utilisation des bitboards je vais vous présenter les 2 fonctions principales dont nous avons besoin : \inlinecode{makeMove} et \inlinecode{isWin}. La première permet de jouer un coup tandis que la seconde permet de déterminer si un joueur à gagné.
+    Pour montrer l'utilisation des bitboards je vais vous présenter les 2 fonctions principales dont nous avons besoin : \inlinecode{makeMove} et \inlinecode{isWin}. La première permet de jouer un coup tandis que la seconde permet de déterminer si un joueur a gagné.
 
-    Avant d'examiner ces fonctions, nous avons encore besoin de garder en mémoire : la position à remplir de chaque colonne qui sera stoquée dans le tableau \inlinecode{heights} et la hauteur max de chaque colonne qui sera stoquée dans le tableau \inlinecode{max\_heights}.
+    Avant d'examiner ces fonctions, nous avons encore besoin de garder en mémoire : la position à remplir de chaque colonne qui sera stockée dans le tableau \inlinecode{heights} et la hauteur max de chaque colonne qui sera stockée dans le tableau \inlinecode{max\_heights}.
 
     \img[Début de partie]{Images/EmptyBoard.png}{0.4}
 
-    Comme on le voit dans la figure ci-dessus, au début de la partie les hauteurs sont: \newline\inlinecode{heights = \{0, 7, 14, 21, 28, 35, 42\}} et les hauteurs max sont: \inlinecode{max\_heights = \{6,13,20,27,34,41,48\}}. A chaque fois qu'un coup sera joué dans une colonne, on augmentera l'indice de la colonne de 1. En gardant ceci en mémoire, cela nous évite de devoir chercher la prochaine case vide à chaque coup joué.
+    Comme on le voit dans la figure ci-dessus, au début de la partie les hauteurs sont: \newline\inlinecode{heights = \{0, 7, 14, 21, 28, 35, 42\}} et les hauteurs max sont: \inlinecode{max\_heights = \{6,13,20,27,34,41,48\}}. À chaque fois qu'un coup sera joué dans une colonne, on augmentera l'indice de la colonne de 1. En gardant ceci en mémoire, cela nous évite de devoir chercher la prochaine case vide à chaque coup joué.
 
     \ptitle{Jouer un coup}
 
@@ -156,7 +156,7 @@
 
     Voici ce que le code fait : 
     \begin{enumerate}
-        \item On récupère la valeur height en fonction de la colonne donnée et on l'utilise pour décaler le nombre 1 vers la gauche jusqu'à cette position. Ensuite on stoque cette valeur dans la variable \inlinecode{move}.
+        \item On récupère la valeur height en fonction de la colonne donnée et on l'utilise pour décaler le nombre 1 vers la gauche jusqu'à cette position. Ensuite on stock cette valeur dans la variable \inlinecode{move}.
         \item On prend le board représentant le joueur et on utilise l'opérateur XOR avec la variable \inlinecode{move}. (\inlinecode{playerBoard \^{} move}) et on met à jour la nouvelle valeur du bitboard.
         \item On incrémente la valeur de la hauteur de cette colonne de 1 pour être prêt pour le prochain coup.
     \end{enumerate}
@@ -168,15 +168,15 @@
     \newpage
     \ptitle{Est-ce qu'un joueur à gagné ?}
 
-    Reprenons la représentation du bitboard
+    Reprenons la représentation du bitboard :
     \img[Représentation du bitboard]{Images/BitBoard.png}{0.5}
-    Pour savoir s'il y a 4 pièces alignées horizontalement, on doit, par exemple, regarder si les positions 11, 18, 25 et 32 sont toutes des 1. On pourrait aussi regarder les positions 21, 28, 35 et 42. Le patterne là-dessous est simple: on prend la position la plus à gauche et on ajoute 7 à chaque fois.
+    Pour savoir s'il y a 4 pièces alignées horizontalement, on doit, par exemple, regarder si les positions 11, 18, 25 et 32 sont toutes des 1. On pourrait aussi regarder les positions 21, 28, 35 et 42. Le pattern là-dessous est simple: on prend la position la plus à gauche et on ajoute 7 à chaque fois.
 
-    Verticallement ce nombre est 1 (par exemple les positions 15 et 16). En diagonale ce nombre est soit 8 (par exemple 16 et 24) ou alors 6 (30 et 36).
+    Verticalement, ce nombre est 1 (par exemple les positions 15 et 16). En diagonale, ce nombre est soit 8 (par exemple 16 et 24) ou alors 6 (30 et 36).
 
     Donc les nombres "magiques" sont 1, 6, 7 et 8.
 
-    Pour tester si il y a 4 pièces alignées on va prendre notre bitboard, faire une copie et la décaler à droite d'un de ces nombres, refaire une copie et la décaler de 2 fois plus et encore une copier mais cette fois-ci 3 fois plus. Ensuite on combine toutes les copies avec l'opérateur AND et le tour est joué. Si la réponse est différente de 0 alors il y a 4 pièces alignées.
+    Pour tester s'il y a 4 pièces alignées, on va prendre notre bitboard, faire une copie et la décaler à droite d'un de ces nombres, refaire une copie et la décaler de 2 fois plus et encore une copie, mais cette fois-ci 3 fois plus. Ensuite, on combine toutes les copies avec l'opérateur AND et le tour est joué. Si la réponse est différente de 0 alors il y a 4 pièces alignées.
 
     Encore une fois, un exemple sera probablement plus clair:
     \img[Exemple de la fonction isWin]{Images/ExempleIsWin.png}{0.8}
@@ -196,19 +196,77 @@
 
 \section{Déroulement du travail}
 
-\subsection{Mise en place}
+\subsection{Structure et technologies}
 
-    Pour commencer, il a fallu choisir la structure et les différentes technologies que je voulais utiliser pour ce projet.
+	Le projet est divisé en 2 parties principales: le \textit{client} et le \textit{serveur}. Le premier contient tout ce que l'utilisateur verra (la page internet, le jeu) et gérera toutes les interactions avec ce dernier. Toutes les informations du client sont ensuite traitées par le serveur à distance. C'est donc le serveur qui sera en charge de calculer les coups de l'IA et de les envoyer au client. Cette structure permet entre autres d'avoir une interface client très légère et donc utilisable sur tous les appareils. Le problème est que la charge de calcul est entièrement sur le serveur, ce qui peut poser problème si beaucoup d'utilisateurs voulaient affronter l'IA.
 
-    \ptitle{La structure du projet}
+	Pour tout le projet, j'utilise NPM (pour  "\textit{Node Package Manager}") qui permet de gérer les dépendances de mon projet simplement. Toutes les informations pour NPM sont contenues dansun fichier \textit{package.json}. On y trouve: la description du projet (nom, description, version, auteur, etc...), les différents scripts (raccourcis pour lancer, générer le projet) et les dépendances.
 
-    \ptitle{Les technologies}
+	Dans le dossier client se trouve:
+	\begin{enumerate}
+		\item Le dossier css
+		\item Le dossier js
+		\item index.html
+		\item package.json
+	\end{enumerate}
+	
+	(1) Le dossier CSS (pour \textit{"Cascading StyleSheet"}) contient les feuilles de style qui permettent de modifier l'apparence de ma page web. Pour ce projet, j'ai décidé de ne pas utiliser le langage CSS, mais de passer par SASS (Syntactically Awesome Stylesheets). Ce langage permet d'écrire un code plus visuel et pratique qui sera ensuite compilé en CSS.
+
+	(2) Le dossier JS (pour \textit{JavaScript}) contient toute la logique de la page. En effet, le JavaScript est un langage qui permet de rendre une page web dynamique et d'y dessiner ce qu'on veut (comme par exemple un jeu du puissance 4). Pour dessiner le plateau de jeu, j'utilise la librairie \textit{p5js} qui gère de manière élégante et légère toutes les actions de dessins et les interactions avec l'utilisateur. Pour ce projet, j'ai aussi décidé d'utiliser \textit{TypeScript} qui est un langage (qui se compile en JavaScript) permettant d'avoir un code plus prévisible et d'attraper les erreurs plus tôt.
+
+	(3) Le fichier \textit{index.html} contient simplement la structure de la page et met charge le css et le js.
+
+	(4) Le \textit{package.json} contient les informations pour NPM, permettant notamment d'automatiser la compilation du TypeScript et du SASS, ainsi que l'installation de p5js.
+
+	En résumé, pour le client j'utilise 3 langages (HTML, SASS et TypeScript), la librairie p5js et le gestionnaire de paquet NPM.
+
+	Le dossier serveur quant à lui contient:
+	\begin{enumerate}
+		\item Le dossier src
+		\item package.json
+	\end{enumerate}
+
+	(1) Le dossier \textit{src} (abréviation de \textit{source}, comme "code source") contient toute la logique du serveur. Tout le code qu'il contient est écrit en TypeScript. Il contient 3 fichiers:
+	\quad\begin{description}
+		\item{a.} Bitboard.ts
+		\item{b.} AI.ts
+		\item{c.} index.ts
+	\end{description}
+    
+	(a) Le fichier Bitboard.ts (\textit{ts} est l'extension des fichiers contenant du code TypeScript) qui contient l'implémentation des bitboards.
+
+	(b) Le fichier AI.ts qui contient toute la logique de l'intelligence artificielle
+
+	(c) Enfin, l'index.ts contient la logique pour recevoir et envoyer des informations au client.
+
+	(2) Le package.json contient, comme vu précédemment, toutes les informations pour le gestionnaire de paquets NPM.
 
 \subsection{Implémentation des bitboards}
 
+	L'implémentation des bitboards est résolument simple, grâce à une théorie claire et des opérations extrêmement simples. J'ai tout de même rencontré certains problèmes liés à des spécificités de JavaScript. Mais avant d'exposer ces problèmes, voyons l'implémentation.
+
+	Comme vu dans la théorie, je commence par initialiser les constantes comme \newline\inlinecode{max\_heights = [5, 12, 19, 26, 33, 40, 47]} et \inlinecode{directions = [1, 6, 7, 8]} (les directions sont les nombres "magiques" de la théorie). Je déclare aussi une variable \textit{data} qui contiendra les bitboards des deux joueurs et une variable \inlinecode{heights = [0, 7, 14, 21, 28, 35, 42]} qui gardera en mémoire la hauteur de chaque colonne. On prépare aussi une variable \inlinecode{counter = 0} qui permet de compter les coups joués (qui est aussi pratique, car s'il est pair, c'est au tour de l'IA sinon, c'est au tour du joueur). Enfin, on crée un tableau \textit{moves} qui gardera tous les coups en mémoire.
+
+	Voyons ensemble la fonction \textit{move} en TypeScript:
+	\begin{lstlisting}
+move(column: number): void {
+    let move = new Long(1).shl(this.heights[column]); // On recupere la hauteur stockee dans heights avec la colonne et on shift le 1 ce nombre de fois a gauche
+    this.heights[column]++; // On incremente la hauteur de la colonne
+    this.data[this.counter & 1] = this.data[this.counter & 1].xor(move); // On joue le coup sur le board
+    this.moves[this.counter++] = column; // On enregistre le coup
+}
+	\end{lstlisting}
+
+	(1) On voit \inlinecode{column: number}, cela permet d'indiquer que la variable \textit{column} est un nombre. On voit aussi \textit{: void}, ce qui indique que cette fonction ne retourne rien.
+	
+    (2) \textit{shl} est l'abréviation de \textit{shift left}.
+
+	
+	Un problème que je n'avais néanmoins pas anticipé, est que JavaScript stock ses nombres dans un espace qui fait $2^{52}$ bytes (ce qui limite leur taille à maximum $2^{52}$) alors que dans certains cas, notre représentation du bitboard peut dépasser ce nombre. Il a donc fallu que j'utilise une librairie appelée \textit{long} qui permet elle de gérer les nombres jusqu'à $2^{64}$, ce qui est suffisant.
+
 \subsection{Implémentation du puissance 4}
 
-\subsection{Implémentation de m inimax}
+\subsection{Implémentation de minimax}
 
 \subsection{Améliorations de l'algorithme}
 
@@ -226,8 +284,9 @@
         \lexique{Implémentation}{Réalisation (d’un produit informatique) à partir de documents, mise en œuvre, développement.}
         \lexique{Entier long}{En programmation informatique, un entier long (en anglais long integer) est un type de données qui représente un nombre entier pouvant prendre plus de place sur une même machine qu'un entier normal.}
         \lexique{RAM}{En anglais \textit{Random Access Memory} et en français \textbf{mémoire vive}, est la mémoire utilisée pendant le traitement de donnée. En opposition à la mémoire dite morte qui ne sert qu'à stoquer des données.}
-        \lexique{AND}{L'opérateur \textit{AND} (ou opérateur ET en français) prend deux nombre en entrée et retourne VRAI (ou dans notre cas 1) si les deux nombres sont les mêmes. Sinon il retourne FAUX (0 pour nous).}
+        \lexique{AND}{L'opérateur \textit{AND} (ou opérateur ET en français) prend deux nombres en entrée et retourne VRAI (ou dans notre cas 1) si les deux nombres sont les mêmes. Sinon il retourne FAUX (0 pour nous).}
         \lexique{XOR}{L'opérateur \textit{XOR} (appelé OU exclusif en français) prend deux nombres en entrée et retourne VRAI si les deux nombres sont différents. Sinon il retourne FAUX.}
+	    \lexique{Dépendance}{Autres logiciels/programmes nécessaires à l'éxcécution d'un autre programme.}
     \end{description}
 \subsection{Livres}
 \printbibliography[heading=none, type=book]
