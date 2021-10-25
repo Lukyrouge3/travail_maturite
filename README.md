@@ -1,11 +1,7 @@
 # Travail de maturité 2021-2022
 ## Puissance4AI
 
-Voici le concept de l'interraction client-serveur
-![Concept](https://raw.githubusercontent.com/Lukyrouge3/travail_maturite/master/Documents/Concept_base.png)
-Un petit aperçu de la page pour jouer
-![Concept](https://raw.githubusercontent.com/Lukyrouge3/travail_maturite/master/Documents/preview.png)
-## Technologies
+Jeu disponible [ici](https://dev.deneria.net/tm)
 
 - NodeJS + Typescript - Pour un serveur stable et bien typé
 - P5js - Pour une gestion plus facile du canvas HTML
