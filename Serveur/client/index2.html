@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Puissance 4</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body style="height: 100vh;overflow: hidden;background-color: #303030;">
+<nav class="navbar is-dark">
+    <div class="navbar-brand">
+        <div class="navbar-item">Puissance4AI</div>
+    </div>
+</nav>
+<div class="container">
+    <div class="columns is-multiline is-mobile">
+        <div id="sideBar" class="column is-4-desktop is-12-mobile">
+            <h2>Bienvenue !</h2>
+            <p>Je vous présente mon travail de maturité: <b>Puissance4AI</b>.
+                C'est une <span class="tooltip" title="L'intelligence artificielle (IA) est un processus d'imitation de l'intelligence humaine qui repose sur la création et l'application d'algorithmes exécutés dans un environnement informatique dynamique. Son but est de permettre à des ordinateurs de penser et d'agir comme des êtres humains.">IA</span><sup><a target="_blank" href="https://www.netapp.com/fr/artificial-intelligence/what-is-artificial-intelligence/#:~:text=L'intelligence%20artificielle%20(IA)%20est%20un%20processus%20d',agir%20comme%20des%20%C3%AAtres%20humains.">1</a></sup> qui joue au Puissance4.
+            </p>
+            <p>Elle est basée sur l'algorithme <span class="tooltip" title="L'algorithme minimax (aussi appelé algorithme MinMax) est un algorithme qui s'applique à la théorie des jeux1 pour les jeux à deux joueurs à somme nulle (et à information complète) consistant à minimiser la perte maximum (c'est-à-dire dans le pire des cas).">minimax</span><sup><a target="_blank" href="https://fr.wikipedia.org/wiki/Algorithme_minimax">2</a></sup> et améliorée avec l'<span title="En informatique, plus précisément en intelligence artificielle et en théorie des jeux, l’élagage alpha-bêta (abrégé élagage αβ) est une technique permettant de réduire le nombre de nœuds évalués par l'algorithme minimax." class="tooltip">alpha-beta pruning</span><sup><a target="_blank" href="https://fr.wikipedia.org/wiki/%C3%89lagage_alpha-b%C3%AAta">3</a></sup></p>
+            <p class="big" id="currentTurn">C'est au tour de l'<span id="currentPlayer" class="yellow">Humain</span></p>
+        </div>
+        <div id="app" class="column is-8-desktop is-12-mobile"></div>
+    </div>
+</div>
+<script src="dist/bundle.js"></script>
+</body>
+</html>

@@ -8,11 +8,11 @@ export default class AI {
     count = 0; // Compte le nombre positions évaluées
     time: number; // Compte le temps pris pour l'évaluation de toutes les positions
 
-    static evaluate(position): number {
-        if (position.isWin(0)) return Infinity;
-        if (position.isWin(1)) return -Infinity;
-        let score = (100 * position.countXInARow(3, 0) + 3 * position.countXInARow(2, 0)) -
-            (100 * position.countXInARow(3, 1) + 3 * position.countXInARow(2, 1));
+    static evaluate(position, index): number {
+        if (position.isWin(index)) return Infinity;
+        if (position.isWin(index == 1 ? 0 : 1)) return -Infinity;
+        let score = (100 * position.countXInARow(3, index) + 3 * position.countXInARow(2, index)) -
+            (100 * position.countXInARow(3, index == 1 ? 0 : 1) + 3 * position.countXInARow(2, index == 1 ? 0 : 1));
 
         return score;
     }
@@ -69,13 +69,13 @@ export default class AI {
      * @param beta Le beta
      * @param maximizingPlayer Si on max ou on min
      */
-    alphaBeta(position: Bitboard, depth = this.max_depth, alpha = -Infinity, beta = Infinity, maximizingPlayer = true): number {
+    alphaBeta(position: Bitboard, index, depth = this.max_depth, alpha = -Infinity, beta = Infinity, maximizingPlayer = true): number {
         // Si la position est une victoire ou si on est à la profondeur max, on évalue la position
-        if (depth == 0 || position.isWin(0) || position.isWin(1)) return AI.evaluate(position);
+        if (depth == 0 || position.isWin(0) || position.isWin(1)) return AI.evaluate(position, index);
         let children = position.listChildren(); // On récupère toutes les positions enfants de celle-ci
         let val = maximizingPlayer ? -Infinity : Infinity; // On initialize notre valeur en fonction de si on min ou on max
         for (let child of children) { // On boucle sur chaque enfant de la position
-            let e = this.alphaBeta(child, depth - 1, alpha, beta, !maximizingPlayer); // On évalue l'enfant
+            let e = this.alphaBeta(child, index, depth - 1, alpha, beta, !maximizingPlayer); // On évalue l'enfant
             val = maximizingPlayer ? Math.max(val, e) : Math.min(val, e); // On min ou on max
             if (depth === this.max_depth && !this.node_map.get(val)) this.node_map.set(val, child.lastMove()); // Si on est sur la première profonfeur, on stoque la valeur
             alpha = maximizingPlayer ? Math.max(alpha, e) : alpha;
